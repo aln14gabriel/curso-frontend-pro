@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>Dev Storage Pro - Versão Final</title>
@@ -11,17 +12,28 @@
         }
     </script>
     <style>
-        .user-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .user-card:hover { transform: translateY(-4px); }
-        .favorite-star.active { color: #fbbf24; fill: #fbbf24; }
+        .user-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .user-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .favorite-star.active {
+            color: #fbbf24;
+            fill: #fbbf24;
+        }
     </style>
 </head>
+
 <body class="bg-slate-50 dark:bg-slate-950 min-h-screen p-4 md:p-8 font-sans transition-colors duration-500">
 
     <div class="max-w-5xl mx-auto">
         <!-- Barra Superior com Botão de Tema -->
         <div class="flex justify-end mb-6">
-            <button id="theme-toggle" class="p-3 rounded-2xl bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800 hover:scale-110 transition-all">
+            <button id="theme-toggle"
+                class="p-3 rounded-2xl bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800 hover:scale-110 transition-all">
                 <span id="theme-icon" class="text-xl">🌙</span>
             </button>
         </div>
@@ -31,16 +43,14 @@
             <h1 class="text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
                 Dev <span class="text-indigo-600">Storage</span>
             </h1>
-            <p class="text-slate-500 dark:text-slate-400 text-lg mb-8">Gerenciamento de desenvolvedores com persistência total.</p>
-            
+            <p class="text-slate-500 dark:text-slate-400 text-lg mb-8">Gerenciamento de desenvolvedores com persistência
+                total.</p>
+
             <div class="relative max-w-xl mx-auto">
-                <input 
-                    type="text" 
-                    id="search-input" 
-                    placeholder="Pesquisar por nome ou empresa..." 
-                    class="w-full pl-12 pr-4 py-4 rounded-2xl border-none ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 shadow-lg text-slate-700 dark:text-slate-200 outline-none transition-all"
-                >
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">🔍</div>
+                <input type="text" id="search-input" placeholder="Pesquisar por nome ou empresa..."
+                    class="w-full pl-12 pr-4 py-4 rounded-2xl border-none ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 shadow-lg text-slate-700 dark:text-slate-200 outline-none transition-all">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">🔍
+                </div>
             </div>
         </header>
 
@@ -54,7 +64,7 @@
         // --- ESTADO DA APLICAÇÃO ---
         let todosOsUsuarios = [];
         let favoritos = JSON.parse(localStorage.getItem('dev_favorites')) || [];
-        
+
         const inputBusca = document.querySelector('#search-input');
         const container = document.querySelector('#lista-usuarios');
         const themeToggle = document.querySelector('#theme-toggle');
@@ -68,7 +78,7 @@
                 themeIcon.textContent = '☀️';
             }
         }
-        inicializarTema(); // já aplica o tema salvo ao carregar
+        inicializarTema();
 
         themeToggle.addEventListener('click', () => {
             const isDark = document.documentElement.classList.toggle('dark');
@@ -96,7 +106,7 @@
 
             container.innerHTML = lista.map(({ id, name, company, email, website }) => {
                 const isFavorito = favoritos.includes(id);
-                
+
                 return `
                 <div class="user-card bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between relative">
                     <button data-id="${id}" class="btn-favorito absolute top-4 right-4 text-2xl focus:outline-none hover:scale-125 transition-transform">
@@ -119,7 +129,7 @@
                 `;
             }).join('');
 
-            // adiciona eventos de favoritos via JS (sem onclick no HTML)
+
             document.querySelectorAll('.btn-favorito').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const id = parseInt(btn.getAttribute('data-id'));
@@ -128,7 +138,6 @@
             });
         }
 
-        // --- 4. FILTRO DE BUSCA ---
         function executarFiltro() {
             const termo = inputBusca.value.toLowerCase();
             const filtrados = todosOsUsuarios.filter(user =>
@@ -140,13 +149,13 @@
 
         inputBusca.addEventListener('input', executarFiltro);
 
-        // --- 5. SIMULAÇÃO DE DADOS (exemplo) ---
         todosOsUsuarios = [
-            { id: 1, name: "Allan", company: { name: "CodeLaboratorio" }, email: "allan@codelab.com", website: "codelaboratorio.com" },
+            { id: 1, name: "Allan", company: { name: "CodeLaboratorio" }, email: "allan@codelab.com", website: "codelabora.com" },
             { id: 2, name: "Mayko", company: { name: "CasaDosDev" }, email: "mayko@devhouse.com", website: "casadosdefv.com" },
             { id: 3, name: "Ruan", company: { name: "SoftHouse" }, email: "ruan@softtech.com", website: "softhouse.com" }
         ];
         renderizar(todosOsUsuarios);
     </script>
 </body>
+
 </html>
