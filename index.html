@@ -2,7 +2,6 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dev Storage Pro - Versão Final</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -54,7 +53,6 @@
     <script>
         // --- ESTADO DA APLICAÇÃO ---
         let todosOsUsuarios = [];
-        // Recupera favoritos do LocalStorage ou inicia vazio
         let favoritos = JSON.parse(localStorage.getItem('dev_favorites')) || [];
         
         const inputBusca = document.querySelector('#search-input');
@@ -70,6 +68,7 @@
                 themeIcon.textContent = '☀️';
             }
         }
+        inicializarTema(); // já aplica o tema salvo ao carregar
 
         themeToggle.addEventListener('click', () => {
             const isDark = document.documentElement.classList.toggle('dark');
@@ -84,12 +83,11 @@
             } else {
                 favoritos.push(id);
             }
-            // Salva na "gaveta" (LocalStorage)
             localStorage.setItem('dev_favorites', JSON.stringify(favoritos));
-            executarFiltro(); // Atualiza a tela
+            executarFiltro(); // atualiza a tela
         }
 
-        // --- 3. RENDERIZAÇÃO (O "MAP") ---
+        // --- 3. RENDERIZAÇÃO ---
         function renderizar(lista) {
             if (lista.length === 0) {
                 container.innerHTML = `<p class="col-span-full text-center py-20 text-slate-400">Nenhum desenvolvedor encontrado...</p>`;
@@ -101,8 +99,7 @@
                 
                 return `
                 <div class="user-card bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between relative">
-                    <!-- Botão de Favorito -->
-                    <button onclick="alternarFavorito(${id})" class="absolute top-4 right-4 text-2xl focus:outline-none hover:scale-125 transition-transform">
+                    <button data-id="${id}" class="btn-favorito absolute top-4 right-4 text-2xl focus:outline-none hover:scale-125 transition-transform">
                         <span class="favorite-star ${isFavorito ? 'active text-yellow-400' : 'text-slate-200 dark:text-slate-700'}">★</span>
                     </button>
                     
@@ -115,3 +112,41 @@
                         
                         <div class="space-y-2 text-slate-500 dark:text-slate-400 text-sm">
                             <p class="flex items-center gap-2"><span>📧</span> ${email}</p>
+                            <p class="flex items-center gap-2"><span>🌐</span> <a href="http://${website}" target="_blank">${website}</a></p>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            // adiciona eventos de favoritos via JS (sem onclick no HTML)
+            document.querySelectorAll('.btn-favorito').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = parseInt(btn.getAttribute('data-id'));
+                    alternarFavorito(id);
+                });
+            });
+        }
+
+        // --- 4. FILTRO DE BUSCA ---
+        function executarFiltro() {
+            const termo = inputBusca.value.toLowerCase();
+            const filtrados = todosOsUsuarios.filter(user =>
+                user.name.toLowerCase().includes(termo) ||
+                user.company.name.toLowerCase().includes(termo)
+            );
+            renderizar(filtrados);
+        }
+
+        inputBusca.addEventListener('input', executarFiltro);
+
+        // --- 5. SIMULAÇÃO DE DADOS (exemplo) ---
+        todosOsUsuarios = [
+            { id: 1, name: "Allan", company: { name: "CodeLaboratorio" }, email: "allan@codelab.com", website: "codelaboratorio.com" },
+            { id: 2, name: "Mayko", company: { name: "CasaDosDev" }, email: "mayko@devhouse.com", website: "casadosdefv.com" },
+            { id: 3, name: "Ruan", company: { name: "SoftHouse" }, email: "ruan@softtech.com", website: "softhouse.com" }
+        ];
+        renderizar(todosOsUsuarios);
+    </script>
+</body>
+</html>
